@@ -1,6 +1,6 @@
 import type { Perro } from '@/domain/models/perro';
  
-import { supabase, urlPublica } from '../services/supabase-service';
+import { supabasePublico, urlPublica } from '../services/supabase-service';
  
 // Fila tal como llega de Postgres. Este tipo no sale del repositorio:
 // hacia arriba solo viaja el modelo de dominio.
@@ -28,7 +28,7 @@ const COLUMNAS = 'id, numero, nombre, rasgo, descripcion, foto_path';
  
 export const perrosRepository = {
   async listar(): Promise<Perro[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublico
       .from('perros')
       .select(COLUMNAS)
       .order('numero');
@@ -37,7 +37,7 @@ export const perrosRepository = {
   },
  
   async obtener(id: string): Promise<Perro> {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublico
       .from('perros')
       .select(COLUMNAS)
       .eq('id', id)

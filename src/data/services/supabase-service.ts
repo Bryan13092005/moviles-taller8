@@ -1,12 +1,35 @@
+import 'expo-sqlite/localStorage/install';
 import { createClient } from '@supabase/supabase-js';
+import { AppState, Platform } from 'react-native';
  
 import { env } from './env';
  
-// Service: envuelve una fuente de datos externa y nada más.
-// No guarda estado ni transforma datos; eso le toca al repositorio.
 export const supabase = createClient(env.supabaseUrl, env.supabaseKey, {
-  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  auth: {
+    storage: typeof localStorage === 'undefined' ? undefined : localStorage,
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: Platform.OS === 'web',
+    flowType: Platform.OS === 'web' ? 'pkce' : 'implicit',
+  },
 });
+
+// Las lecturas son públicas y deben mostrar los mismos datos con o sin sesión.
+export const supabasePublico = createClient(env.supabaseUrl, env.supabaseKey, {
+  auth: {
+    storageKey: 'poliperrodex-lectura-publica',
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+});
+
+if (Platform.OS !== 'web') {
+  AppState.addEventListener('change', (estado) => {
+    if (estado === 'active') supabase.auth.startAutoRefresh();
+    else supabase.auth.stopAutoRefresh();
+  });
+}
  
 export function urlPublica(ruta: string): string {
   return supabase.storage.from(env.bucket).getPublicUrl(ruta).data.publicUrl;

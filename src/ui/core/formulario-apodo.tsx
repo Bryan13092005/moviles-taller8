@@ -37,8 +37,7 @@ export function FormularioApodo() {
     <View style={estilos.caja}>
       <Texto variante="subtitulo">¿Cómo te llamamos?</Texto>
       <Texto variante="nota">
-        Tus capturas quedan a nombre de este apodo. No hay contraseña, así que
-        cualquiera podría usar el mismo: por eso más adelante vendrá el login.
+        Tus capturas mostrarán este apodo y quedarán asociadas a tu cuenta.
       </Texto>
       <TextInput
         value={texto}

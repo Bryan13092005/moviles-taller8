@@ -5,7 +5,7 @@ import { perrosRepository } from '@/data/repositories/perros-repository';
 import type { Avistamiento } from '@/domain/models/avistamiento';
 import type { Perro } from '@/domain/models/perro';
  
-export function usePerfilPerroViewModel(perroId: string, apodo: string | null) {
+export function usePerfilPerroViewModel(perroId: string, usuarioId: string | null) {
   const [perro, setPerro] = useState<Perro | null>(null);
   const [avistamientos, setAvistamientos] = useState<Avistamiento[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -52,7 +52,7 @@ export function usePerfilPerroViewModel(perroId: string, apodo: string | null) {
  
   // "Lo tengo" se decide aquí y no en la vista: es una regla del juego,
   // no una decisión de cómo dibujar.
-  const loTengo = avistamientos.some((a) => a.apodo === apodo);
+  const loTengo = usuarioId !== null && avistamientos.some((a) => a.usuarioId === usuarioId);
  
   return {
     perro,
@@ -61,7 +61,7 @@ export function usePerfilPerroViewModel(perroId: string, apodo: string | null) {
     descripcion: loTengo
       ? (perro?.descripcion ?? '')
       : 'Captúralo para leer su ficha completa.',
-    esMio: (avistamiento: Avistamiento) => avistamiento.apodo === apodo,
+    esMio: (avistamiento: Avistamiento) => usuarioId !== null && avistamiento.usuarioId === usuarioId,
     cargando,
     error,
     recargar: cargar,

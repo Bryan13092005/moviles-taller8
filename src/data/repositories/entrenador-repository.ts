@@ -1,7 +1,5 @@
 import { File, Paths } from 'expo-file-system';
  
-// Sin login, el "entrenador" es solo un apodo guardado en el teléfono.
-// Cuando llegue Supabase Auth, cambia este repositorio y nada más.
 const archivo = new File(Paths.document, 'apodo.txt');
  
 export const entrenadorRepository = {

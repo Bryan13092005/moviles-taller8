@@ -2,12 +2,13 @@ import { File } from 'expo-file-system';
  
 import type { Avistamiento } from '@/domain/models/avistamiento';
  
-import { subirImagen, supabase, urlPublica } from '../services/supabase-service';
+import { subirImagen, supabase, supabasePublico, urlPublica } from '../services/supabase-service';
  
 type FilaAvistamiento = {
   id: string;
   perro_id: string;
   apodo: string;
+  usuario_id: string | null;
   foto_path: string;
   latitud: number;
   longitud: number;
@@ -16,7 +17,7 @@ type FilaAvistamiento = {
 };
  
 const COLUMNAS =
-  'id, perro_id, apodo, foto_path, latitud, longitud, creado_en, perro:perros(nombre)';
+  'id, perro_id, apodo, usuario_id, foto_path, latitud, longitud, creado_en, perro:perros(nombre)';
  
 function aDominio(fila: FilaAvistamiento): Avistamiento {
   return {
@@ -24,6 +25,7 @@ function aDominio(fila: FilaAvistamiento): Avistamiento {
     perroId: fila.perro_id,
     nombrePerro: fila.perro?.nombre ?? 'Perro desconocido',
     apodo: fila.apodo,
+    usuarioId: fila.usuario_id,
     fotoUrl: urlPublica(fila.foto_path),
     latitud: fila.latitud,
     longitud: fila.longitud,
@@ -40,6 +42,7 @@ function cortarSiSeCancelo(signal?: AbortSignal) {
 type NuevaCaptura = {
   perroId: string;
   apodo: string;
+  usuarioId: string;
   fotoUri: string;
   latitud: number;
   longitud: number;
@@ -47,7 +50,7 @@ type NuevaCaptura = {
  
 export const avistamientosRepository = {
   async listar(perroId?: string): Promise<Avistamiento[]> {
-    let consulta = supabase
+    let consulta = supabasePublico
       .from('avistamientos')
       .select(COLUMNAS)
       .order('creado_en', { ascending: false });
@@ -59,11 +62,11 @@ export const avistamientosRepository = {
     return (data as unknown as FilaAvistamiento[]).map(aDominio);
   },
  
-  async perrosCapturadosPor(apodo: string): Promise<Set<string>> {
-    const { data, error } = await supabase
+  async perrosCapturadosPor(usuarioId: string): Promise<Set<string>> {
+    const { data, error } = await supabasePublico
       .from('avistamientos')
       .select('perro_id')
-      .eq('apodo', apodo);
+      .eq('usuario_id', usuarioId);
     if (error) throw new Error(`No se pudo revisar tus capturas: ${error.message}`);
     return new Set(data.map((fila) => fila.perro_id as string));
   },
@@ -86,6 +89,7 @@ export const avistamientosRepository = {
     let insercion = supabase.from('avistamientos').insert({
       perro_id: captura.perroId,
       apodo: captura.apodo,
+      usuario_id: captura.usuarioId,
       foto_path: ruta,
       latitud: captura.latitud,
       longitud: captura.longitud,

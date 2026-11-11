@@ -2,28 +2,30 @@ import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
  
 import { useApodo } from '@/ui/core/apodo-view-model';
+import { useAuth } from '@/ui/core/auth-view-model';
 import { Estado } from '@/ui/core/estado';
 import { FormularioApodo } from '@/ui/core/formulario-apodo';
+import { FormularioLogin } from '@/ui/core/formulario-login';
 import { colores, espacio } from '@/ui/core/tema';
 import { Texto } from '@/ui/core/texto';
  
 import { TarjetaPerro } from './tarjeta-perro';
 import { usePokedexViewModel } from './use-pokedex-view-model';
  
-// La pantalla se parte en dos porque un hook no puede llamarse de forma
-// condicional: primero vemos si hay apodo y solo entonces creamos el
-// ViewModel, que necesita ese apodo para consultar.
 export function PokedexScreen() {
   const { apodo, listo } = useApodo();
+  const auth = useAuth();
  
-  if (!listo) return <Estado cargando />;
+  if (!listo || !auth.listo) return <Estado cargando />;
+  if (!auth.usuario) return <FormularioLogin />;
   if (!apodo) return <FormularioApodo />;
-  return <ListaPokedex apodo={apodo} />;
+  return <ListaPokedex apodo={apodo} usuarioId={auth.usuario.id} />;
 }
  
-function ListaPokedex({ apodo }: { apodo: string }) {
+function ListaPokedex({ apodo, usuarioId }: { apodo: string; usuarioId: string }) {
   const { olvidarApodo } = useApodo();
-  const vm = usePokedexViewModel(apodo);
+  const { cerrarSesion, ocupado, error } = useAuth();
+  const vm = usePokedexViewModel(usuarioId);
  
   if (vm.cargando || (vm.error && vm.perros.length === 0)) {
     return (
@@ -46,6 +48,10 @@ function ListaPokedex({ apodo }: { apodo: string }) {
               Cambiar apodo
             </Texto>
           </Pressable>
+          <Pressable onPress={cerrarSesion} disabled={ocupado} hitSlop={8}>
+            <Texto variante="nota" style={estilos.enlace}>Cerrar sesión</Texto>
+          </Pressable>
+          {error && <Texto style={{ color: colores.alerta }}>{error}</Texto>}
         </View>
       }
       renderItem={({ item }) => (
