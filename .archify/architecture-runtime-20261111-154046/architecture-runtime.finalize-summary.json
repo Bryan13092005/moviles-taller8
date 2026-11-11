@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\APP MOVILES\\Documents\\poliperroDex\\.archify\\architecture-runtime-20261111-154046\\candidate.json",
+    "sha256": "03b1f5896b1c6116d9b95af36ccf0d5738e80813f788ab0a6364a9d0f97d77c6",
+    "bytes": 4035
+  },
+  "artifact": {
+    "path": "C:\\Users\\APP MOVILES\\Documents\\poliperroDex\\.archify\\architecture-runtime-20261111-154046\\architecture-runtime.html",
+    "sha256": "714a6f948fca359a00767ca641f2015fa9345611eee12adbf29f833dd2eafade",
+    "bytes": 845352
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\APP MOVILES\\Documents\\poliperroDex\\.archify\\architecture-runtime-20261111-154046\\architecture-runtime.finalize.json",
+    "summaryReceipt": "C:\\Users\\APP MOVILES\\Documents\\poliperroDex\\.archify\\architecture-runtime-20261111-154046\\architecture-runtime.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\APP MOVILES\\Documents\\poliperroDex\\.archify\\architecture-runtime-20261111-154046\\architecture-runtime.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-11-11T20:45:10.380Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 6869,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}

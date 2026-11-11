@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arquitectura de ejecución · PoliperroDex",
+    "locale": "es",
+    "output": ".archify/architecture-runtime-20261111-154046/architecture-runtime.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "entrenador",
+      "type": "external",
+      "label": "Entrenador",
+      "sublabel": "persona usuaria",
+      "pos": [40, 250],
+      "size": [100, 60]
+    },
+    {
+      "id": "cliente",
+      "type": "frontend",
+      "label": "App Expo",
+      "sublabel": "Expo Router · pantallas y ViewModels",
+      "pos": [200, 240],
+      "size": [170, 80]
+    },
+    {
+      "id": "repositorios",
+      "type": "backend",
+      "label": "Repositorios",
+      "sublabel": "perros · avistamientos · apodo",
+      "pos": [455, 240],
+      "size": [190, 80]
+    },
+    {
+      "id": "supabase",
+      "type": "cloud",
+      "label": "Supabase",
+      "sublabel": "Postgres · Storage bucket",
+      "pos": [795, 240],
+      "size": [225, 80]
+    },
+    {
+      "id": "apis_dispositivo",
+      "type": "external",
+      "label": "APIs del dispositivo",
+      "sublabel": "cámara · GPS · acelerómetro",
+      "pos": [200, 60],
+      "size": [190, 80]
+    },
+    {
+      "id": "webview_mapa",
+      "type": "frontend",
+      "label": "Mapa en WebView",
+      "sublabel": "HTML + Leaflet",
+      "pos": [455, 60],
+      "size": [190, 80]
+    },
+    {
+      "id": "recursos_mapa",
+      "type": "cloud",
+      "label": "Recursos cartográficos",
+      "sublabel": "Leaflet CDN · OpenStreetMap",
+      "pos": [795, 60],
+      "size": [225, 80]
+    },
+    {
+      "id": "archivo_apodo",
+      "type": "database",
+      "label": "Archivo local",
+      "sublabel": "apodo.txt · expo-file-system",
+      "pos": [455, 425],
+      "size": [190, 70]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "En el dispositivo",
+      "wraps": [
+        "cliente",
+        "repositorios",
+        "apis_dispositivo",
+        "webview_mapa",
+        "archivo_apodo"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "uso-app",
+      "from": "entrenador",
+      "to": "cliente",
+      "variant": "emphasis"
+    },
+    {
+      "id": "app-datos",
+      "from": "cliente",
+      "to": "repositorios"
+    },
+    {
+      "id": "datos-cloud",
+      "from": "repositorios",
+      "to": "supabase",
+      "label": "consultas + Storage"
+    },
+    {
+      "id": "datos-apodo",
+      "from": "repositorios",
+      "to": "archivo_apodo",
+      "label": "apodo local"
+    },
+    {
+      "id": "app-dispositivo",
+      "from": "cliente",
+      "to": "apis_dispositivo",
+      "label": "cámara"
+    },
+    {
+      "id": "app-mapa",
+      "from": "cliente",
+      "to": "webview_mapa",
+      "label": "HTML + puntos"
+    },
+    {
+      "id": "mapa-recursos",
+      "from": "webview_mapa",
+      "to": "recursos_mapa",
+      "label": "Leaflet + tiles"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "Alcance de evidencia",
+      "items": [
+        "Representa el código del estado local actual; las referencias no están fijadas a una revisión porque no hay remote origin configurado y hay cambios sin confirmar."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Flujo de captura",
+      "items": [
+        "La app toma la foto, obtiene la ubicación y solicita al repositorio guardar la captura.",
+        "El repositorio sube la imagen a Storage y después inserta el avistamiento en Postgres."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Estado y mapa",
+      "items": [
+        "El apodo del entrenador se conserva en un archivo del dispositivo; no se usa una cuenta remota.",
+        "El mapa carga los avistamientos y dibuja sus puntos dentro de un WebView con Leaflet y mosaicos de OpenStreetMap."
+      ]
+    }
+  ]
+}
